@@ -26,6 +26,7 @@
     "expo-linear-gradient": "~14.0.2",
     "expo-splash-screen": "~0.29.22",
     "expo-status-bar": "~2.0.1",
+    "firebase": "^9.6.11",
     "formik": "^2.4.6",
     "lottie-react-native": "7.1.0",
     "react": "18.3.1",
