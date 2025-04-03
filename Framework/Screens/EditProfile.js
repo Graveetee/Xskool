@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
-// import { useNavigation } from '@react-navigation/native';   
+import { useNavigation } from '@react-navigation/native';
 
 function EditProfileScreen() {
     const navigation = useNavigation();
     const [name, setName] = useState('Sana Afzal');
     const [email, setEmail] = useState('sanaafzal291@gmail.com');
-    const [phoneNumber, setPhoneNumber] = useState('');
+    const [phone, setPhoneNumber] = useState('');
     const [address, setAddress] = useState('');
     const [bio, setBio] = useState('');
 
     function handleSave() {
-        console.log('Saving profile:', { name, email, phoneNumber, address, bio });
+        console.log('Saving profile:', { name, email, phone, address, bio });
         navigation.goBack();
     };
 
@@ -23,18 +23,18 @@ function EditProfileScreen() {
                 style={styles.input}
                 placeholder="Name"
                 value={name}
-                onChangeText={setName}
+
             />
             <TextInput
                 style={styles.input}
                 placeholder="Email"
-
+                value={email}
 
             />
             <TextInput
                 style={styles.input}
                 placeholder="Phone Number"
-
+                value={phone}
             />
             <TextInput
                 style={styles.input}

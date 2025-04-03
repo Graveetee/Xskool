@@ -17,7 +17,7 @@ import { useContext, useEffect, useState } from 'react';
 import { AppContext } from '../../global/globalVariables';
 import { doc, getDoc, onSnapshot } from 'firebase/firestore';
 import { errorMessage } from '../Components/formatErrorMessage';
-import { db } from '../Firebase/settings';
+import { db } from '../Firebase/Settings';
 
 const carouselLinks = [
     "https://delete-accound.profiterworld.com/app-carousel-img/slide1.png",

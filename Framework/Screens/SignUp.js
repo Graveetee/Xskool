@@ -23,7 +23,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faGoogle, faXTwitter } from "@fortawesome/free-brands-svg-icons";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth, db } from "../Firebase/settings";
+import { auth, db } from "../Firebase/Settings";
 import { doc, setDoc } from "firebase/firestore";
 
 const { width, height } = Dimensions.get('window');

@@ -5,17 +5,21 @@ import { Login } from "../Screens/Login"
 import { Intro } from "../Screens/Intro"
 
 import { NavigationContainer } from "@react-navigation/native"
+import EditProfileScreen from "../Screens/EditProfile"
+import ProfileScreen from "../Screens/Profile"
 
 const Stack = createNativeStackNavigator()
 
 export function StackNavigator() {
     return (
         <NavigationContainer>
-            <Stack.Navigator initialRouteName="Login">
+            <Stack.Navigator initialRouteName="Profile" screenOptions={{ headerShown: false }}>
                 <Stack.Screen name="Intro" component={Intro} options={{ headerShown: false }} />
                 <Stack.Screen name="SignUp" component={SignUp} />
                 <Stack.Screen name="Login" component={Login} />
                 <Stack.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: false }} />
+                <Stack.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false }} />
+                <Stack.Screen name="EditProfile" component={EditProfileScreen} />
 
             </Stack.Navigator>
         </NavigationContainer>
