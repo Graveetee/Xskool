@@ -49,8 +49,8 @@ export function Login({ navigation, route }) {
         <SafeAreaView style={styles.safeArea}>
             <LinearGradient
                 colors={['#ffffff', Theme.colors.primary + 40]}
-                style={styles.gradient}
-            >
+                style={styles.gradient}>
+
                 <ScrollView contentContainerStyle={styles.scrollView}>
                     <View style={styles.logoContainer}>
                         <Image
@@ -70,7 +70,7 @@ export function Login({ navigation, route }) {
                                         const user = userCredential.user.uid;
                                         setPreloader(false);
                                         setUserUID(user);
-                                        navigation.navigate("HomeScreen")
+                                        navigation.navigate("")
                                     })
                                     .catch(e => {
                                         setPreloader(false);

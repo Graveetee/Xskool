@@ -15,7 +15,7 @@ import { Courses } from './Courses';
 import { AppButton } from '../Components/AppButton';
 import { useContext, useEffect, useState } from 'react';
 import { AppContext } from '../../global/globalVariables';
-import { doc, getDoc, onSnapshot } from 'firebase/firestore';
+import { addDoc, collection, doc, getDoc, onSnapshot } from 'firebase/firestore';
 import { errorMessage } from '../Components/formatErrorMessage';
 import { db } from '../Firebase/Settings';
 
@@ -27,14 +27,15 @@ const carouselLinks = [
     "https://delete-accound.profiterworld.com/app-carousel-img/slide5.png",
 ];
 
-function Home() {
-    const { userUID, setUserUID, courses, setUserInfo, userInfo, setPreloader } = useContext(AppContext)
+function Home({ navigation }) {
+    const { userUID, setUserUID, setCourses, courses, setUserInfo, userInfo, setPreloader } = useContext(AppContext)
     const [visibility, setVisibility] = useState(false)
     const screenWidth = Dimensions.get("screen").width;
 
     useEffect(() => {
+
         setPreloader(true);
-        // getDoc(doc(db, "users", userUID))
+        // getDoc(doc(db, "", userUID))
         //     .then((doc) => {
         //         if (doc.exists()) {
         //             setUserInfo(doc.data())
@@ -46,14 +47,73 @@ function Home() {
         //         console.log(e);
         //         Alert.alert("Registration Failed!", errorMessage(e.code));
         //     });
-        onSnapshot(doc(db, "users", userUID), (doc) => {
+        onSnapshot(doc(db, "Xusers", userUID), (doc) => {
             setPreloader(false);
             if (doc.exists()) {
                 setUserInfo(doc.data())
             }
-        }
-        )
+        })
+
+
+        onSnapshot(collection(db, "Xcourses"), (snapshot) => {
+            setPreloader(false);
+            const c = []
+            snapshot.forEach((doc) => {
+                c.push({ ...doc.data(), docID: doc.id })
+                // setCourses((prev) => [...prev, { ...doc.data(), id: doc.id }])
+            });
+            setCourses(c)
+        });
     }, []);
+
+    function createCourse() {
+        setPreloader(true);
+        addDoc(collection(db, "Xcourses"), {
+            title: "Computer Operations",
+            description: "Computer operations involve the basic functions and processes that a computer performs to execute tasks and manipulate data. These operations include input, processing, storage, and output.",
+            instructor: userUID,
+            instructorName: `${userInfo.firstname} ${userInfo.lastname}`,
+            image: "https://delete-accound.profiterworld.com/app-carousel-img/slide2.png",
+            createdAt: new Date(),
+            duration: 30,
+            code: "CS102",
+            students: [],
+        })
+            .then(() => {
+                Alert.alert("Course Created Successfully!");
+                setPreloader(false);
+                navigation.navigate("Courses")
+            })
+            .catch(e => {
+                setPreloader(false);
+                console.log(e);
+                Alert.alert("Course Creation Failed!", errorMessage(e.code));
+            });
+    }
+
+
+    // const doc = {
+    //     data: () => {
+    //         return {
+    //             title: "Introduction to Computer Science",
+    //             description: "Learn the basics of computer science and programming.",
+    //             instructor: userUID,
+    //             instructorName: `${userInfo.firstname} ${userInfo.lastname}`,
+    //             image: "https://delete-accound.profiterworld.com/app-carousel-img/slide1.png",
+    //             createdAt: new Date(),
+    //             duration: 30,
+    //             code: "CS101",
+    //             students: [],
+    //         }
+    //     },
+    //     id: "1234567890",
+    //     exists: true,
+    //     api: "skjudfkjv df",
+    //     accessToken: {
+    //         token: "skjdfkjv",
+    //         expires: new Date(),
+    //     }
+    // }
 
 
     return (
@@ -61,7 +121,8 @@ function Home() {
             {/* Header Section */}
             <View style={styles.headerContainer}>
                 <Image
-                    source={require("../../assets/Xskool-v-gold.png")}
+                    source={{ uri: userInfo.image }}
+                    defaultSource={require('../../assets/user.png')}
                     style={styles.logo}
                 />
                 <View>
@@ -101,7 +162,7 @@ function Home() {
                     <TouchableOpacity
                         key={index}
                         style={styles.gridItem}
-                        onPress={() => { setVisibility(true); setUserUID((Math.random() * 90000000).toFixed(2)) }}
+                        onPress={() => setVisibility(true)}
                     >
                         <View style={styles.gridItemContent}>
                             <FontAwesomeIcon
@@ -114,32 +175,10 @@ function Home() {
                     </TouchableOpacity>
                 ))}
             </View>
-            <Modal
-                visible={visibility}
-                transparent={true}
-                animationType='slide'
-            >
-                <View style={{ flex: 1, backgroundColor: "#0000008b" }}>
-                    <Pressable onPress={() => setVisibility(false)} style={{ flex: 1 }}></Pressable>
-                    <View style={{ padding: 20, backgroundColor: "white", borderTopLeftRadius: 20, borderTopRightRadius: 20 }}>
-                        <View style={{ paddingBottom: 20, }}>
-                            <Carousel
-                                loop
-                                width={screenWidth - 40}
-                                height={170}
-                                autoPlay={true}
-                                data={carouselLinks}
-                                style={{ borderRadius: 10 }}
-                                scrollAnimationDuration={2000}
-                                renderItem={({ index }) => (
-                                    <Image style={{ width: '100%', height: 170, borderRadius: 10, }} source={{ uri: carouselLinks[index] }} defaultSource={require("../../assets/slide4.png")} />
-                                )}
-                            />
-                            <AppButton onPress={() => setVisibility(false)} style={{ marginTop: 20 }}>Close</AppButton>
-                        </View>
-                    </View>
-                </View>
-            </Modal>
+            <View style={{ padding: 20 }}>
+                {/* <AppButton onPress={createCourse}>Create a Course</AppButton> */}
+            </View>
+
         </SafeAreaView>
     );
 }
@@ -205,6 +244,7 @@ const styles = StyleSheet.create({
 const Tab = createBottomTabNavigator()
 
 export function HomeScreen() {
+    const { userInfo } = useContext(AppContext)
     return (
         <Tab.Navigator
             screenOptions={({ route }) => ({
@@ -229,7 +269,7 @@ export function HomeScreen() {
         >
             <Tab.Screen name='Home' component={Home} />
             <Tab.Screen name='Courses' component={Courses} />
-            <Tab.Screen name='Profile' component={Profile} />
+            <Tab.Screen name='Profile' component={Profile} options={{ title: userInfo.firstname }} />
         </Tab.Navigator>
     )
 }
